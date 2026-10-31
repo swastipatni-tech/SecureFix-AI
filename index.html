@@ -260,13 +260,18 @@ async function scanCode() {
     results.textContent = "Running security analysis...";
 
     try {
-        const response = await fetch("https://securefix-ai.onrender.com/scan", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ code: code })
-});
+       const response = await fetch(
+    "https://securefix-ai.onrender.com/scan",
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            code: code
+        })
+    }
+);
         const data = await response.json();
 
         if (!response.ok) {
