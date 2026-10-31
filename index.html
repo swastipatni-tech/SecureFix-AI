@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecureFix AI | Code Security Scanner</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0b1020;
+    color: #e5e7eb;
+    min-height: 100vh;
+}
+
+header {
+    padding: 22px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #263047;
+    background: #10182b;
+}
+
+.logo { font-size: 23px; font-weight: 800; color: #60a5fa; }
+.logo span { color: white; }
+
+.status {
+    color: #4ade80;
+    font-size: 13px;
+}
+
+.container {
+    max-width: 1250px;
+    margin: auto;
+    padding: 40px 25px;
+}
+
+.hero { margin-bottom: 30px; }
+
+.hero h1 {
+    font-size: 34px;
+    margin-bottom: 10px;
+}
+
+.hero p { color: #94a3b8; }
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.card {
+    background: #141e33;
+    border: 1px solid #293650;
+    border-radius: 12px;
+    padding: 22px;
+}
+
+.card small { color: #94a3b8; }
+.card h2 { font-size: 30px; margin-top: 12px; }
+
+.workspace {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 20px;
+}
+
+h3 { margin-bottom: 18px; }
+
+textarea {
+    width: 100%;
+    height: 350px;
+    background: #080e1b;
+    color: #a7f3d0;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 18px;
+    resize: vertical;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+textarea:focus {
+    outline: 1px solid #3b82f6;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+}
+
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 12px 22px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.scan {
+    background: #2563eb;
+    color: white;
+}
+
+.scan:hover { background: #1d4ed8; }
+
+.secondary {
+    background: #293650;
+    color: white;
+}
+
+.results {
+    margin-top: 25px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    background: #080e1b;
+    border: 1px solid #334155;
+    padding: 18px;
+    border-radius: 8px;
+    max-height: 420px;
+    overflow-y: auto;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.message {
+    color: #94a3b8;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #64748b;
+}
+
+@media(max-width: 800px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .workspace { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 27px; }
+}
+
+@media(max-width: 450px) {
+    .stats { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">🛡 SecureFix<span>-AI</span></div>
+    <div class="status">● Security Scanner</div>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+        <h1>AI-Powered Code Security Scanner</h1>
+        <p>Analyze your source code, identify vulnerabilities
+        and generate detailed security reports.</p>
+    </section>
+
+    <section class="stats">
+        <div class="card">
+            <small>Total Scans</small>
+            <h2 id="total">0</h2>
+        </div>
+        <div class="card">
+            <small>Critical Findings</small>
+            <h2 id="critical">0</h2>
+        </div>
+        <div class="card">
+            <small>High Findings</small>
+            <h2 id="high">0</h2>
+        </div>
+        <div class="card">
+            <small>Scanner Status</small>
+            <h2 style="color:#4ade80;font-size:22px">Ready</h2>
+        </div>
+    </section>
+
+    <section class="workspace">
+
+        <div class="card">
+            <h3>⌨ Source Code Input</h3>
+
+            <textarea id="code"
+            placeholder="Paste your C/C++ source code here..."></textarea>
+
+            <div class="actions">
+                <button class="scan" id="scanBtn"
+                onclick="scanCode()">🔍 Scan Code</button>
+
+                <button class="secondary"
+                onclick="clearCode()">Clear</button>
+            </div>
+
+            <p class="message" id="message">
+                Ready to scan your source code.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>📊 Security Analysis</h3>
+
+            <p class="message">
+                Your scan results and vulnerability report
+                will appear here.
+            </p>
+
+            <div class="results" id="results">
+Waiting for your first scan...
+            </div>
+
+            <div class="actions">
+                <button class="secondary"
+                onclick="downloadReport()">⬇ Download Report</button>
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    SecureFix-AI | Intelligent Code Security Analysis
+</footer>
+
+<script>
+let scanCount = 0;
+let lastReport = "";
+
+async function scanCode() {
+
+    const code = document.getElementById("code").value.trim();
+    const message = document.getElementById("message");
+    const results = document.getElementById("results");
+    const button = document.getElementById("scanBtn");
+
+    if (!code) {
+        message.textContent = "Please enter source code first.";
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Scanning...";
+    message.textContent = "Analyzing your code. Please wait...";
+    results.textContent = "Running security analysis...";
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/scan", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({ code: code })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Scan failed.");
+        }
+
+        lastReport = data.report || JSON.stringify(data, null, 2);
+
+        results.textContent = lastReport;
+
+        scanCount++;
+        document.getElementById("total").textContent = scanCount;
+
+        const critical = (lastReport.match(/^\s*\[\d+\]/gm) || []).filter(
+            line => false
+        );
+
+        // Count findings by Flawfinder risk level.
+        const findings = lastReport.match(/^\s*\[\s*[0-5]\s*\]/gm) || [];
+        const levels = findings.map(item =>
+            Number(item.match(/\d+/)[0])
+        );
+
+        document.getElementById("critical").textContent =
+            levels.filter(level => level === 5).length;
+
+        document.getElementById("high").textContent =
+            levels.filter(level => level === 4).length;
+
+        message.textContent =
+            "Scan completed successfully. Scanner: " +
+            (data.scanner || "Flawfinder");
+
+    } catch (error) {
+        results.textContent = "Error: " + error.message;
+        message.textContent = "Unable to complete scan.";
+    } finally {
+        button.disabled = false;
+        button.textContent = "🔍 Scan Code";
+    }
+}
+
+function clearCode() {
+    document.getElementById("code").value = "";
+    document.getElementById("results").textContent =
+        "Waiting for your next scan...";
+    document.getElementById("message").textContent =
+        "Ready to scan your source code.";
+}
+
+function downloadReport() {
+    if (!lastReport) {
+        alert("Please perform a scan first.");
+        return;
+    }
+
+    const blob = new Blob([lastReport], {
+        type: "text/plain"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "SecureFix-AI-Report.txt";
+    link.click();
+
+    URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
