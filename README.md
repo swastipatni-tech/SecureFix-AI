@@ -1,116 +1,162 @@
-SecureFix AI 🛡️
+🛡️ SecureFix AI
+
 Detect. Repair. Verify. Secure.
 
-SecureFix AI is an AI-assisted security analysis platform designed to identify potentially vulnerable code in C/C++ applications, particularly in IoT firmware.
+SecureFix AI is a security-focused code analysis platform designed to identify potentially vulnerable coding patterns in C/C++ source code, with a focus on IoT firmware security.
 
-It aims to help developers detect unsafe coding practices, understand security risks, and move towards safer code through AI-assisted repair and independent verification.
-
-
+It helps developers identify unsafe coding practices, understand potential security risks, and review vulnerability findings through a simple interface.
 
 🚨 Problem Statement
 
-C and C++ are widely used in embedded systems and IoT devices. However, unsafe memory operations, buffer overflows, and improper input handling can introduce serious security vulnerabilities.
+C and C++ are widely used in embedded systems and IoT devices. However, unsafe memory operations, improper input handling, and buffer overflow vulnerabilities can expose these systems to security risks.
 
-Identifying and correcting these issues manually can be difficult, especially for beginners and developers working with resource-constrained systems.
+Finding such issues manually can be challenging and time-consuming.
 
 💡 Our Solution
 
-SecureFix AI provides a focused workflow for analysing potentially vulnerable C/C++ code.
+SecureFix AI provides a platform for analysing C/C++ source code using static analysis.
 
-It uses static analysis to identify suspicious coding patterns and presents findings with their severity, location, and explanations.
+It uses Flawfinder to identify potentially unsafe functions and coding patterns, then presents findings with their severity, code location, and descriptions.
 
-The platform is designed to extend this process with AI-assisted repair and security verification.
+The project aims to extend this workflow with AI-assisted code repair and independent security verification.
 
-✨ Key Features
+✨ Current Features
 
-- Vulnerability Detection: Identifies potentially unsafe coding patterns in C/C++ source code.
-- Severity Classification: Organises findings by security severity.
-- Detailed Explanations: Displays the affected code location and vulnerability description.
-- AI-Assisted Repair: Planned integration to suggest safer alternatives for vulnerable code.
-- Security Rescanning: Designed to check suggested repairs for remaining known issues.
-- Developer-Friendly Interface: Provides a simple interface to submit code and review scan results.
+Static Vulnerability Detection: Scans submitted C code using Flawfinder.
 
-⚙️ Technology Stack
+Severity Classification: Categorises findings as High, Medium, or Low.
 
-| Component | Technology |
+Detailed Findings: Displays the affected file, line number, function, category, and description.
 
-| Frontend | React, TypeScript |
-| Backend | Python, FastAPI |
-| Static Analysis | Flawfinder |
-| Deployment | Render |
-| AI Integration | LLM-based repair (integration in progress) |
+Code Submission: Accepts source code through the backend API.
+
+Backend Health Check: Provides an endpoint to check backend availability.
+
+Developer-Friendly Interface: Offers a frontend for submitting code and viewing scan results.
 
 🔄 How It Works
 
-1. Submit Code: The developer uploads or submits C/C++ source code.
-2. Detect: The backend analyses the code using Flawfinder.
-3. Explain: Security findings are presented with severity and descriptions.
-4. Repair: The planned AI component suggests safer code alternatives.
-5. Rescan: The repaired code can be checked again for known vulnerability patterns.
-6. Verify: Further testing and verification are intended to strengthen confidence in the suggested changes.
+Submit: The developer submits C source code through the application.
+
+Scan: The FastAPI backend sends the submitted code to Flawfinder.
+
+Analyse: The scanner identifies potentially unsafe coding patterns.
+
+Classify: Findings are organised according to severity.
+
+Review: Developers can inspect the reported issues and understand the associated risks.
+
+⚙️ Technology Stack
+
+Component
+
+Technology
+
+Frontend
+
+React, TypeScript
+
+Backend
+
+Python, FastAPI
+
+Static Analysis
+
+Flawfinder
+
+Server
+
+Uvicorn
+
+Deployment
+
+Render
 
 🧪 Sample Test
 
-The repository includes `vulnerable.c`, an intentionally vulnerable C program containing unsafe input handling using `gets()`.
+The repository includes vulnerable.c, an intentionally vulnerable C program containing unsafe input handling using gets().
 
-It can be used to demonstrate how SecureFix AI identifies potentially unsafe operations such as buffer-overflow risks.
+It can be used to demonstrate how SecureFix AI detects potentially unsafe coding patterns.
 
-Important: This file is for static-analysis demonstration only. Do not compile or execute it.
+Note: This file is intended for static-analysis demonstration only. Do not compile or execute it.
 
 🚀 Getting Started
 
- Prerequisites
-- Python 3.12
-- pip
-- Git
+Prerequisites
 
-Installation
+Python 3.12 or compatible version
 
-Clone the repository:
+pip
 
-bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+Git
 
+1. Clone the repository
 
-Navigate to the project directory:
+git clone https://github.com/swastipatni-tech/SecureFix-AI.git
 
-bash
-cd YOUR_PROJECT_FOLDER
+2. Navigate to the project directory
 
+cd SecureFix-AI
 
-Install dependencies:
+3. Install dependencies
 
-bash
 pip install -r requirements.txt
 
+4. Start the backend server
 
-Start the FastAPI application:
-
-bash
 uvicorn main:app --reload
 
+5. Access the API
 
-Open the API documentation:
+Backend: http://127.0.0.1:8000/
 
-text
-http://127.0.0.1:8000/docs
+Health check: http://127.0.0.1:8000/health
 
+API documentation: http://127.0.0.1:8000/docs
 
-Note: These instructions assume `main.py` contains the FastAPI application and the required dependencies are listed in `requirements.txt`.
+API Endpoints
+
+Method
+
+Endpoint
+
+Purpose
+
+GET
+
+/
+
+Backend welcome message
+
+GET
+
+/health
+
+Backend health status
+
+POST
+
+/scan
+
+Scan submitted C code
+
+The /scan endpoint accepts source code through a multipart form field named code.
 
 🔮 Future Scope
 
-- Complete LLM-based code repair integration.
-- Secure compilation and automated testing in an isolated environment.
-- Support for additional vulnerability categories.
-- More comprehensive security verification.
-- Expanded support for IoT and embedded-system security workflows.
+Integration of an LLM for AI-assisted vulnerability repair.
+
+Independent security rescanning of suggested repairs.
+
+Secure compilation and automated testing in an isolated environment.
+
+Support for additional vulnerability categories.
+
+Expanded analysis capabilities for IoT and embedded-system security.
 
 👥 Team
 
-Team Name: The Debuggers  
-Project: SecureFix AI
+Team Name: The Debuggers
+Project Name: SecureFix AI
 
----
-
-*SecureFix AI aims to make secure coding more accessible by combining static analysis with AI-assisted development and verification.*
+SecureFix AI aims to make secure coding more accessible through focused vulnerability detection and a roadmap towards AI-assisted repair and verification.
